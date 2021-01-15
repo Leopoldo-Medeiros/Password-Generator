@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Password Generator</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+</head>
+<body>
+    <div class="inputBox">
+        <ul class="brands">
+            <li class="brands__item">
+                <a href="#">
+                    <img src="img/logo2.png" alt=""/>
+                </a>
+            </li>
+            <li><!-- other logos --></li>
+        </ul>
+        <h2>Password Generator</h2>
+<!--        <input type="text" name="" id="password1" readonly="">-->
+        <div id="password"></div>
+        <div class="hidden" id="copiedSuccess">copied</div>
+        <div class="hidden" id="failed">failed to copy</div>
+        <div id="btn" onclick="getPassword();">Generate Password</div>
+        <br><br>
+
+<!-- Table alert - Colour Description---------------------->
+        <div class="message  message--error">
+            <p><span style="color:red"><b>Red</b></span> colour stands for Uppercase letters.</p>
+          </div>
+          
+          <div class="message  message--warning">
+            <p><span style="color:orange"><b>Orange</b></span> colour stands for Symbols.</p>
+          </div>
+          
+          <div class="message  message--success">
+            <p><span style="color:black"><b>Black</b></span> colour stands for Lower letters.</p>
+          </div>
+    </div>  
+</div>
+
+<script type="text/javascript">
+    // function getPassword(){
+    //
+    //     var chars = "0123456789abcdefghijklmnopqrstuvwxzABCDEFGHIJKLMNOPQRSTUVWZ!@#$%^&*()_+?><:{}[]";
+    //     var passwordLength = 10;
+    //     var password = "";
+    //
+    //     for (var i=0; i<passwordLength; i++){
+    //         var randomNumber = Math.floor(Math.random() * chars.length);
+    //         password += chars.substring(randomNumber, randomNumber+1);
+    //     }
+    //     document.getElementById("password").value = password
+    //
+    // }
+
+    let text = ''
+
+    function getPassword() {
+        // Take an area of password, a div
+        const password = document.querySelector('#password')
+
+        password.addEventListener("click", ()=>{
+            //const copyText = textElement
+
+            /* Select the text field */
+            //textElement.select();
+            //textElement.setSelectionRange(0, 99999); /* For mobile devices */
+
+            /* Copy the text inside the text field */
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    const div = document.querySelector('#copiedSuccess')
+                    div.classList.remove("hidden")
+                    setTimeout(()=>{
+                        div.classList.add("hidden")
+                    },5000)
+                })
+                .catch((error) => {
+                    const div = document.querySelector('#failed')
+                    div.classList.remove("hidden")
+                    setTimeout(()=>{
+                        div.classList.add("hidden")
+                    },5000)
+                })
+
+        })
+
+        // Define the sets
+        //  - Was having an iterable issue thought it needed to be changed to array but it didnt so this didnt change anything.
+        const setOfNumbers = ['0','1','2','3','4','5','6','7','8','9']
+        const setOfLowercase = 'abcdefghijklmnopqrstuvwxyz'
+        const setOfUppercase = setOfLowercase.toUpperCase()
+        const setOfSymbols = '!@#$%^&*()_+?><:{}[]"'
+
+        //console.log(setOfNumbers,setOfLowercase,setOfUppercase,setOfSymbol)
+
+        // Function responsible to give a color to your set
+        const decideColor = character => {
+            if (setOfNumbers.indexOf(character) > -1) {
+                return '#009999'
+            } else if (setOfLowercase.indexOf(character) > -1) {
+                return 'black'
+            } else if (setOfUppercase.indexOf(character) > -1) {
+                return 'red'
+            } else if (setOfSymbols.indexOf(character) > -1) {
+                return '#ff6c00'
+            } else {
+                return 'brown'
+            }
+        }
+        // There was an else statement before another else if . That wont work as the else would always take priority.
+        // Also mismatching names on the symbols const and missing closing curly bracket.
+
+
+        //console.log(DecideColor('a'))
+        //not sure if this actually changed anything or not
+        const numberOfCharacters = '12'
+
+        const generatesPassword = (numberOfCharacters) => {
+            // - These parts seemed to just be overwriting the above set variables which is what actually caused the Iterable error.
+            // Also mismatching const names below for allCharacters
+
+            // let setOfNumbers;
+            // let setOfLowercase;
+            // let setOfUppercase;
+            // let setOfSymbols;
+            const allCharacters = [
+                ...setOfNumbers,
+                ...setOfLowercase,
+                ...setOfUppercase,
+                ...setOfSymbols
+            ]
+           // console.log(allCharacters)
+            password.innerHTML = ''
+            text = ''
+            for (let i = 0; i < numberOfCharacters; i++) {
+                // let allCharacters;
+                const RandomCharacter = allCharacters[Math.floor(Math.random() * allCharacters.length)]
+                //console.log(RandomCharacter)
+
+                text += RandomCharacter
+
+
+                const characterOnHTML = document.createElement('span')
+                characterOnHTML.append(RandomCharacter)
+                characterOnHTML.style.color = decideColor(RandomCharacter)
+
+
+                password.appendChild(characterOnHTML)
+// The above does work sort of, The span is getting created and the value is being loaded with the correct colors but its not going into the password box as the value.
+//                So we may need to just display it and not show it directly in the box.
+            }
+        }
+        generatesPassword(numberOfCharacters)
+    }
+</script>
+</body>
+</html>
